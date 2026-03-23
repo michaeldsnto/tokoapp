@@ -2,6 +2,7 @@
 
 @section('top_actions')
 <button class="btn btn-primary no-print" onclick="window.print()">Print Nota</button>
+<a href="{{ route('transactions.receipt.pdf', $transaction) }}" class="btn btn-primary no-print">Export PDF</a>
 <a href="{{ route('pos.index') }}" class="btn no-print">Transaksi Baru</a>
 @endsection
 

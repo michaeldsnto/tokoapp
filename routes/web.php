@@ -31,4 +31,5 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/pos', [PosController::class, 'store'])->name('pos.store');
     Route::get('/pos/lookup', [PosController::class, 'productLookup'])->name('pos.lookup');
     Route::get('/transactions/{transaction}/receipt', [ReceiptController::class, 'show'])->name('transactions.receipt');
+    Route::get('/transactions/{transaction}/receipt/pdf', [ReceiptController::class, 'downloadPdf'])->name('transactions.receipt.pdf');
 });
