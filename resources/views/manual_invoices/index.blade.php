@@ -13,7 +13,7 @@
                     <th>Invoice</th>
                     <th>Pelanggan</th>
                     <th>Status</th>
-                    <th>Jatuh Tempo</th>
+                    <th>Tanggal</th>
                     <th>Total</th>
                     <th>Aksi</th>
                 </tr>
@@ -30,7 +30,7 @@
                             <span class="badge warning">UNPAID</span>
                         @endif
                     </td>
-                    <td>{{ $invoice->due_date?->format('d M Y H:i') ?: '-' }}</td>
+                    <td>{{ $invoice->transacted_at->format('d M Y H:i') }}</td>
                     <td>Rp {{ number_format($invoice->total, 0, ',', '.') }}</td>
                     <td style="white-space: nowrap; display:flex; gap:8px; flex-wrap:wrap;">
                         <a href="{{ route('transactions.receipt', $invoice) }}" class="btn">Lihat Nota</a>

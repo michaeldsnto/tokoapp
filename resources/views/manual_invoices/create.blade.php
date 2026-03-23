@@ -2,7 +2,7 @@
 
 @section('top_actions')
     <span class="badge">Status Unpaid</span>
-    <a href="{{ route('pos.index') }}" class="btn">Kembali ke POS</a>
+    <a href="{{ route('manual-invoices.index') }}" class="btn">Daftar Nota</a>
 @endsection
 
 @section('content')
@@ -64,15 +64,6 @@
                     @error('customer_name') <div class="error">{{ $message }}</div> @enderror
                 </div>
                 <div class="field">
-                    <label for="due_date">Jatuh Tempo</label>
-                    <input type="datetime-local" id="due_date" name="due_date" value="{{ old('due_date') }}">
-                    @error('due_date') <div class="error">{{ $message }}</div> @enderror
-                </div>
-                <div class="field">
-                    <label for="discount_amount">Diskon</label>
-                    <input type="number" id="discount_amount" name="discount_amount" min="0" step="0.01" value="{{ old('discount_amount', 0) }}">
-                </div>
-                <div class="field">
                     <label for="notes">Catatan Nota</label>
                     <textarea id="notes" name="notes">{{ old('notes') }}</textarea>
                 </div>
@@ -83,7 +74,6 @@
 
                 <div class="summary-stack">
                     <div class="summary-row"><span class="muted">Jumlah item</span><strong id="manual-item-count">0 item</strong></div>
-                    <div class="summary-row"><span class="muted">Subtotal</span><strong id="manual-subtotal">Rp 0</strong></div>
                     <div class="summary-row"><span class="muted">Total nota</span><strong id="manual-total">Rp 0</strong></div>
                 </div>
 
@@ -104,7 +94,6 @@ const manualEmpty = document.querySelector('#manual-empty');
 const manualSearch = document.querySelector('#manual-search');
 const manualCategory = document.querySelector('#manual-category');
 const manualCards = Array.from(document.querySelectorAll('.manual-card'));
-const manualDiscount = document.querySelector('#discount_amount');
 const formatCurrency = (value) => `Rp ${new Intl.NumberFormat('id-ID').format(value || 0)}`;
 
 function manualPriceForUnit(product, unitType) {
@@ -150,11 +139,7 @@ function renderManualCart() {
             </div>
             <div class="manual-item-total">
                 <div>
-                    <div class="muted">Harga unit</div>
-                    <strong>${formatCurrency(unitPrice)}</strong>
-                </div>
-                <div>
-                    <div class="muted">Total</div>
+                    <div class="muted">Total item</div>
                     <strong>${formatCurrency(total)}</strong>
                 </div>
                 <button type="button" class="btn btn-danger manual-remove-item" data-id="${item.id}">Hapus</button>
@@ -200,13 +185,10 @@ function bindManualCartActions() {
 
 function updateManualTotals() {
     const items = Array.from(manualCart.values());
-    const subtotal = items.reduce((sum, item) => sum + (manualPriceForUnit(item, item.unit_type) * item.quantity), 0);
-    const discount = Number(manualDiscount.value || 0);
-    const total = Math.max(subtotal - discount, 0);
+    const total = items.reduce((sum, item) => sum + (manualPriceForUnit(item, item.unit_type) * item.quantity), 0);
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
     document.querySelector('#manual-item-count').textContent = `${itemCount} item`;
-    document.querySelector('#manual-subtotal').textContent = formatCurrency(subtotal);
     document.querySelector('#manual-total').textContent = formatCurrency(total);
 }
 
@@ -224,14 +206,12 @@ document.querySelectorAll('.add-manual-product').forEach((button) => {
     button.addEventListener('click', () => addManualItem(JSON.parse(button.dataset.product)));
 });
 
-manualDiscount.addEventListener('input', updateManualTotals);
 manualSearch.addEventListener('input', filterManualProducts);
 manualCategory.addEventListener('input', filterManualProducts);
 document.querySelector('#manual-clear').addEventListener('click', () => {
     manualCart.clear();
     renderManualCart();
     document.querySelector('#manual-form').reset();
-    manualDiscount.value = 0;
     updateManualTotals();
 });
 

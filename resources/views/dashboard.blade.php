@@ -15,12 +15,12 @@
 <div class="grid cols-2" style="margin-top:18px;">
     <div class="panel">
         <h3>Nota Manual Belum Lunas</h3><p class="muted">Tagihan pelanggan yang dibuat manual dan belum dibayar.</p>
-        <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Pelanggan</th><th>Jatuh Tempo</th><th>Total</th></tr></thead><tbody>
+        <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Pelanggan</th><th>Tanggal</th><th>Total</th></tr></thead><tbody>
             @forelse($pendingManualInvoices as $transaction)
                 <tr>
                     <td><a href="{{ route('transactions.receipt', $transaction) }}">{{ $transaction->invoice_number }}</a></td>
                     <td>{{ $transaction->customer_name ?: '-' }}</td>
-                    <td>{{ $transaction->due_date?->format('d M Y H:i') ?: '-' }}</td>
+                    <td>{{ $transaction->transacted_at->format('d M Y H:i') }}</td>
                     <td>Rp {{ number_format($transaction->total, 0, ',', '.') }}</td>
                 </tr>
             @empty

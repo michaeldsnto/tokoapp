@@ -44,7 +44,7 @@
             th, td { padding:12px 10px; }
             .receipt { margin:0; padding:18px; border-radius:16px; }
         }
-        @media print { body { background:#fff; } .no-print { display:none !important; } .receipt { box-shadow:none; margin:0; max-width:none; } }
+        @media print { body { background:#fff; } .no-print, .topbar { display:none !important; } .receipt { box-shadow:none; margin:0; max-width:none; } .main { padding:0; } }
     </style>
 </head>
 <body>

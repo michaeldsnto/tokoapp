@@ -38,9 +38,8 @@ class ManualInvoiceController extends Controller
     public function store(StoreManualInvoiceRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $discountAmount = (float) ($validated['discount_amount'] ?? 0);
 
-        $transaction = DB::transaction(function () use ($validated, $discountAmount, $request) {
+        $transaction = DB::transaction(function () use ($validated, $request) {
             $lines = collect($validated['items'])->map(function (array $item) {
                 $product = Product::query()->lockForUpdate()->findOrFail($item['product_id']);
                 $quantity = (int) $item['quantity'];
@@ -52,7 +51,6 @@ class ManualInvoiceController extends Controller
             });
 
             $subtotal = $lines->sum('lineTotal');
-            $total = max($subtotal - $discountAmount, 0);
 
             $transaction = Transaction::create([
                 'invoice_number' => 'INV-MNL-'.now()->format('YmdHis').'-'.Str::upper(Str::random(4)),
@@ -61,14 +59,14 @@ class ManualInvoiceController extends Controller
                 'user_id' => $request->user()->id,
                 'customer_name' => $validated['customer_name'],
                 'subtotal' => $subtotal,
-                'discount_amount' => $discountAmount,
-                'total' => $total,
+                'discount_amount' => 0,
+                'total' => $subtotal,
                 'paid_amount' => 0,
                 'change_amount' => 0,
                 'item_count' => $lines->sum('quantity'),
                 'notes' => $validated['notes'] ?? null,
                 'transacted_at' => now(),
-                'due_date' => $validated['due_date'] ?? null,
+                'due_date' => null,
             ]);
 
             foreach ($lines as $line) {

@@ -19,41 +19,34 @@
 
 @section('content')
 <div class="receipt">
-    <div style="text-align:center; margin-bottom:20px;">
-        <strong style="font-size:1.3rem;">TokoApp POS</strong><br>
-        <span>Jl. Contoh No. 123</span><br>
-        <span>{{ $transaction->invoice_number }}</span><br>
-        <span>{{ $transaction->transacted_at->format('d M Y H:i') }}</span><br>
-        <span>{{ strtoupper($transaction->transaction_mode) }} | {{ strtoupper($transaction->payment_status) }}</span>
+    <div style="text-align:center; margin-bottom:18px;">
+        <strong style="font-size:1.35rem;">KASIMURA</strong><br>
+        <span>Jln. Bengkunis, Wuring</span><br>
+        <span>{{ $transaction->transacted_at->format('d M Y H:i') }}</span>
     </div>
+
+    @if($transaction->customer_name)
+        <div style="margin-bottom:14px; text-align:center;">
+            <strong>Pelanggan: {{ $transaction->customer_name }}</strong>
+        </div>
+    @endif
+
     <table>
-        <thead><tr><th>Item</th><th>Qty</th><th>Total</th></tr></thead>
+        <thead><tr><th>Barang</th><th>Qty</th><th>Total</th></tr></thead>
         <tbody>
         @foreach($transaction->details as $detail)
             <tr>
-                <td>{{ $detail->product_name }}<br><small>{{ $detail->product_code }} | {{ ucfirst($detail->unit_type) }} @ Rp {{ number_format($detail->unit_price, 0, ',', '.') }}</small></td>
-                <td>{{ $detail->quantity }}</td>
+                <td>{{ $detail->product_name }}</td>
+                <td>{{ $detail->quantity }} {{ ucfirst($detail->unit_type) }}</td>
                 <td>Rp {{ number_format($detail->line_total, 0, ',', '.') }}</td>
             </tr>
         @endforeach
         </tbody>
     </table>
-    <div style="margin-top:18px;">
-        @if($transaction->customer_name)
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Pelanggan</span><strong>{{ $transaction->customer_name }}</strong></div>
-        @endif
-        @if($transaction->due_date)
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Jatuh Tempo</span><strong>{{ $transaction->due_date->format('d M Y H:i') }}</strong></div>
-        @endif
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Subtotal</span><strong>Rp {{ number_format($transaction->subtotal, 0, ',', '.') }}</strong></div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Diskon</span><strong>Rp {{ number_format($transaction->discount_amount, 0, ',', '.') }}</strong></div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Total</span><strong>Rp {{ number_format($transaction->total, 0, ',', '.') }}</strong></div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Bayar</span><strong>Rp {{ number_format($transaction->paid_amount, 0, ',', '.') }}</strong></div>
-        <div style="display:flex; justify-content:space-between;"><span>Kembalian</span><strong>Rp {{ number_format($transaction->change_amount, 0, ',', '.') }}</strong></div>
-    </div>
-    <div style="margin-top:18px; text-align:center;">
-        <small>Kasir: {{ $transaction->cashier->name }}</small><br>
-        <small>Terima kasih telah berbelanja.</small>
+
+    <div style="margin-top:16px; display:flex; justify-content:space-between;">
+        <span><strong>Total</strong></span>
+        <strong>Rp {{ number_format($transaction->total, 0, ',', '.') }}</strong>
     </div>
 </div>
 @endsection
