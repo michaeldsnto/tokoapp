@@ -12,20 +12,25 @@ class DashboardController extends Controller
     public function __invoke(): View
     {
         $todaySales = Transaction::query()
+            ->where('payment_status', 'paid')
             ->whereDate('transacted_at', today())
             ->sum('total');
 
         $monthSales = Transaction::query()
+            ->where('payment_status', 'paid')
             ->whereBetween('transacted_at', [now()->startOfMonth(), now()->endOfMonth()])
             ->sum('total');
 
-        $lowStockProducts = Product::query()
-            ->with('category')
-            ->whereColumn('stock', '<=', 'low_stock_threshold')
-            ->orderBy('stock')
+        $pendingManualInvoices = Transaction::query()
+            ->where('transaction_mode', 'manual')
+            ->where('payment_status', 'unpaid')
+            ->latest('transacted_at')
+            ->limit(5)
             ->get();
 
         $topProducts = DB::table('transaction_details')
+            ->join('transactions', 'transactions.id', '=', 'transaction_details.transaction_id')
+            ->where('transactions.payment_status', '=', 'paid')
             ->select('product_name', DB::raw('SUM(quantity) as qty_sold'))
             ->groupBy('product_name')
             ->orderByDesc('qty_sold')
@@ -39,7 +44,7 @@ class DashboardController extends Controller
                 'today_sales' => $todaySales,
                 'month_sales' => $monthSales,
             ],
-            'lowStockProducts' => $lowStockProducts,
+            'pendingManualInvoices' => $pendingManualInvoices,
             'topProducts' => $topProducts,
         ]);
     }

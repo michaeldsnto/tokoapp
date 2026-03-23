@@ -13,9 +13,6 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         User::query()->updateOrCreate(
@@ -51,10 +48,10 @@ class DatabaseSeeder extends Seeder
         });
 
         $products = [
-            ['name' => 'Air Mineral 600ml', 'code' => '899100100001', 'price' => 4000, 'stock' => 30, 'category' => 'Minuman'],
-            ['name' => 'Kopi Instan', 'code' => '899100100002', 'price' => 2500, 'stock' => 40, 'category' => 'Minuman'],
-            ['name' => 'Keripik Kentang', 'code' => '899100100003', 'price' => 12000, 'stock' => 12, 'category' => 'Makanan'],
-            ['name' => 'Sabun Mandi', 'code' => '899100100004', 'price' => 8500, 'stock' => 8, 'category' => 'Kebutuhan Harian'],
+            ['name' => 'Air Mineral 600ml', 'code' => '899100100001', 'satuan' => 4000, 'pak' => 48000, 'lusin' => 42000, 'category' => 'Minuman'],
+            ['name' => 'Kopi Instan', 'code' => '899100100002', 'satuan' => 2500, 'pak' => 30000, 'lusin' => 27000, 'category' => 'Minuman'],
+            ['name' => 'Keripik Kentang', 'code' => '899100100003', 'satuan' => 12000, 'pak' => 145000, 'lusin' => 130000, 'category' => 'Makanan'],
+            ['name' => 'Sabun Mandi', 'code' => '899100100004', 'satuan' => 8500, 'pak' => 98000, 'lusin' => 92000, 'category' => 'Kebutuhan Harian'],
         ];
 
         foreach ($products as $product) {
@@ -65,9 +62,10 @@ class DatabaseSeeder extends Seeder
                 [
                     'category_id' => $category->id,
                     'name' => $product['name'],
-                    'price' => $product['price'],
-                    'stock' => $product['stock'],
-                    'low_stock_threshold' => 5,
+                    'price' => $product['satuan'],
+                    'price_per_unit' => $product['satuan'],
+                    'price_per_pack' => $product['pak'],
+                    'price_per_dozen' => $product['lusin'],
                     'is_active' => true,
                 ]
             );

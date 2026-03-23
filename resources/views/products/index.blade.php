@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Barang', 'heading' => 'Manajemen Barang', 'subheading' => 'Tambah, cari, filter, dan pantau stok barang toko.'])
+@extends('layouts.app', ['title' => 'Barang', 'heading' => 'Manajemen Barang', 'subheading' => 'Kelola barang dan harga jual berdasarkan satuan, pak, dan lusin.'])
 
 @section('top_actions')
 <a href="{{ route('products.create') }}" class="btn btn-primary">Tambah Barang</a>
@@ -20,13 +20,6 @@
                 @endforeach
             </select>
         </div>
-        <div class="field">
-            <label for="stock">Filter Stok</label>
-            <select id="stock" name="stock">
-                <option value="">Semua</option>
-                <option value="low" @selected(($filters['stock'] ?? '') === 'low')>Stok menipis</option>
-            </select>
-        </div>
         <div class="field" style="justify-content:end;">
             <button class="btn btn-primary" style="margin-top:32px;">Terapkan Filter</button>
         </div>
@@ -46,11 +39,14 @@
             <div class="product-body">
                 <div style="display:flex; justify-content:space-between; gap:8px;">
                     <div><strong>{{ $product->name }}</strong><br><span class="muted">{{ $product->code }}</span></div>
-                    @if($product->isLowStock()) <span class="badge warning">Stok Menipis</span> @endif
+                    <span class="badge">3 Harga</span>
                 </div>
                 <div style="margin-top:12px;" class="muted">{{ $product->category->name }}</div>
-                <div class="stat-value" style="font-size:1.3rem;">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                <div class="muted">Stok: {{ $product->stock }}</div>
+                <div style="margin-top:16px; display:grid; gap:8px;">
+                    <div><strong>Satuan:</strong> Rp {{ number_format($product->price_per_unit, 0, ',', '.') }}</div>
+                    <div><strong>Pak:</strong> Rp {{ number_format($product->price_per_pack, 0, ',', '.') }}</div>
+                    <div><strong>Lusin:</strong> Rp {{ number_format($product->price_per_dozen, 0, ',', '.') }}</div>
+                </div>
                 <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
                     <a href="{{ route('products.edit', $product) }}" class="btn">Edit</a>
                     <form action="{{ route('products.destroy', $product) }}" method="POST" class="inline" onsubmit="return confirm('Hapus barang ini?')">

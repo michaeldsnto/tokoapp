@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ManualInvoiceController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReceiptController;
@@ -30,6 +31,12 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
     Route::post('/pos', [PosController::class, 'store'])->name('pos.store');
     Route::get('/pos/lookup', [PosController::class, 'productLookup'])->name('pos.lookup');
+
+    Route::get('/manual-invoices', [ManualInvoiceController::class, 'index'])->name('manual-invoices.index');
+    Route::get('/manual-invoices/create', [ManualInvoiceController::class, 'create'])->name('manual-invoices.create');
+    Route::post('/manual-invoices', [ManualInvoiceController::class, 'store'])->name('manual-invoices.store');
+    Route::patch('/manual-invoices/{transaction}/mark-paid', [ManualInvoiceController::class, 'markPaid'])->name('manual-invoices.mark-paid');
+
     Route::get('/transactions/{transaction}/receipt', [ReceiptController::class, 'show'])->name('transactions.receipt');
     Route::get('/transactions/{transaction}/receipt/pdf', [ReceiptController::class, 'downloadPdf'])->name('transactions.receipt.pdf');
 });

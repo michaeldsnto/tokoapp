@@ -13,8 +13,9 @@ class Product extends Model
         'name',
         'code',
         'price',
-        'stock',
-        'low_stock_threshold',
+        'price_per_unit',
+        'price_per_pack',
+        'price_per_dozen',
         'image_path',
         'is_active',
     ];
@@ -23,6 +24,9 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'price_per_unit' => 'decimal:2',
+            'price_per_pack' => 'decimal:2',
+            'price_per_dozen' => 'decimal:2',
             'is_active' => 'boolean',
         ];
     }
@@ -37,8 +41,21 @@ class Product extends Model
         return $this->hasMany(TransactionDetail::class);
     }
 
-    public function isLowStock(): bool
+    public static function unitOptions(): array
     {
-        return $this->stock <= $this->low_stock_threshold;
+        return [
+            'satuan' => 'Satuan',
+            'pak' => 'Pak',
+            'lusin' => 'Lusin',
+        ];
+    }
+
+    public function getPriceForUnit(string $unitType): float
+    {
+        return match ($unitType) {
+            'pak' => (float) $this->price_per_pack,
+            'lusin' => (float) $this->price_per_dozen,
+            default => (float) $this->price_per_unit,
+        };
     }
 }

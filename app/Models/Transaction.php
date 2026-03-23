@@ -10,7 +10,10 @@ class Transaction extends Model
 {
     protected $fillable = [
         'invoice_number',
+        'transaction_mode',
+        'payment_status',
         'user_id',
+        'customer_name',
         'subtotal',
         'discount_amount',
         'total',
@@ -19,6 +22,7 @@ class Transaction extends Model
         'item_count',
         'notes',
         'transacted_at',
+        'due_date',
     ];
 
     protected function casts(): array
@@ -30,6 +34,7 @@ class Transaction extends Model
             'paid_amount' => 'decimal:2',
             'change_amount' => 'decimal:2',
             'transacted_at' => 'datetime',
+            'due_date' => 'datetime',
         ];
     }
 
@@ -41,5 +46,10 @@ class Transaction extends Model
     public function details(): HasMany
     {
         return $this->hasMany(TransactionDetail::class);
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->payment_status === 'paid';
     }
 }

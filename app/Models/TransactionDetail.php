@@ -12,6 +12,7 @@ class TransactionDetail extends Model
         'product_id',
         'product_name',
         'product_code',
+        'unit_type',
         'unit_price',
         'quantity',
         'line_total',

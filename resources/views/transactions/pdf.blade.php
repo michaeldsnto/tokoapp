@@ -24,6 +24,7 @@
             <div class="muted">Jl. Contoh No. 123</div>
             <div>{{ $transaction->invoice_number }}</div>
             <div>{{ $transaction->transacted_at->format('d M Y H:i') }}</div>
+            <div>{{ strtoupper($transaction->transaction_mode) }} | {{ strtoupper($transaction->payment_status) }}</div>
         </div>
 
         <table>
@@ -37,7 +38,7 @@
             <tbody>
                 @foreach($transaction->details as $detail)
                     <tr>
-                        <td>{{ $detail->product_name }}<br><span class="muted">{{ $detail->product_code }}</span></td>
+                        <td>{{ $detail->product_name }}<br><span class="muted">{{ $detail->product_code }} | {{ ucfirst($detail->unit_type) }} @ Rp {{ number_format($detail->unit_price, 0, ',', '.') }}</span></td>
                         <td>{{ $detail->quantity }}</td>
                         <td>Rp {{ number_format($detail->line_total, 0, ',', '.') }}</td>
                     </tr>
@@ -46,6 +47,12 @@
         </table>
 
         <div class="summary">
+            @if($transaction->customer_name)
+                <div class="summary-row"><span>Pelanggan</span><span>{{ $transaction->customer_name }}</span></div>
+            @endif
+            @if($transaction->due_date)
+                <div class="summary-row"><span>Jatuh Tempo</span><span>{{ $transaction->due_date->format('d M Y H:i') }}</span></div>
+            @endif
             <div class="summary-row"><span>Subtotal</span><span>Rp {{ number_format($transaction->subtotal, 0, ',', '.') }}</span></div>
             <div class="summary-row"><span>Diskon</span><span>Rp {{ number_format($transaction->discount_amount, 0, ',', '.') }}</span></div>
             <div class="summary-row"><span>Total</span><span><strong>Rp {{ number_format($transaction->total, 0, ',', '.') }}</strong></span></div>

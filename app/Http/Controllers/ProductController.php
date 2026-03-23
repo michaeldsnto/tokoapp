@@ -16,7 +16,6 @@ class ProductController extends Controller
     {
         $search = $request->string('search')->toString();
         $categoryId = $request->integer('category');
-        $stock = $request->string('stock')->toString();
 
         $products = Product::query()
             ->with('category')
@@ -27,7 +26,6 @@ class ProductController extends Controller
                 });
             })
             ->when($categoryId, fn ($query, $categoryId) => $query->where('category_id', $categoryId))
-            ->when($stock === 'low', fn ($query) => $query->whereColumn('stock', '<=', 'low_stock_threshold'))
             ->latest()
             ->paginate(12)
             ->withQueryString();
@@ -35,7 +33,7 @@ class ProductController extends Controller
         return view('products.index', [
             'products' => $products,
             'categories' => Category::query()->orderBy('name')->get(),
-            'filters' => compact('search', 'categoryId', 'stock'),
+            'filters' => compact('search', 'categoryId'),
         ]);
     }
 
@@ -50,6 +48,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $data['price'] = $data['price_per_unit'];
         $data['is_active'] = $request->boolean('is_active', true);
 
         if ($request->hasFile('image')) {
@@ -72,6 +71,7 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product): RedirectResponse
     {
         $data = $request->validated();
+        $data['price'] = $data['price_per_unit'];
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {

@@ -21,19 +21,19 @@
         @error('category_id') <div class="error">{{ $message }}</div> @enderror
     </div>
     <div class="field">
-        <label for="price">Harga</label>
-        <input type="number" id="price" name="price" min="0" step="0.01" value="{{ old('price', $product->price) }}" required>
-        @error('price') <div class="error">{{ $message }}</div> @enderror
+        <label for="price_per_unit">Harga Satuan</label>
+        <input type="number" id="price_per_unit" name="price_per_unit" min="0" step="0.01" value="{{ old('price_per_unit', $product->price_per_unit ?? $product->price) }}" required>
+        @error('price_per_unit') <div class="error">{{ $message }}</div> @enderror
     </div>
     <div class="field">
-        <label for="stock">Stok</label>
-        <input type="number" id="stock" name="stock" min="0" value="{{ old('stock', $product->stock ?? 0) }}" required>
-        @error('stock') <div class="error">{{ $message }}</div> @enderror
+        <label for="price_per_pack">Harga Pak</label>
+        <input type="number" id="price_per_pack" name="price_per_pack" min="0" step="0.01" value="{{ old('price_per_pack', $product->price_per_pack ?? 0) }}" required>
+        @error('price_per_pack') <div class="error">{{ $message }}</div> @enderror
     </div>
     <div class="field">
-        <label for="low_stock_threshold">Batas Stok Menipis</label>
-        <input type="number" id="low_stock_threshold" name="low_stock_threshold" min="0" value="{{ old('low_stock_threshold', $product->low_stock_threshold ?? 5) }}" required>
-        @error('low_stock_threshold') <div class="error">{{ $message }}</div> @enderror
+        <label for="price_per_dozen">Harga Lusin</label>
+        <input type="number" id="price_per_dozen" name="price_per_dozen" min="0" step="0.01" value="{{ old('price_per_dozen', $product->price_per_dozen ?? 0) }}" required>
+        @error('price_per_dozen') <div class="error">{{ $message }}</div> @enderror
     </div>
     <div class="field">
         <label for="image">Gambar</label>

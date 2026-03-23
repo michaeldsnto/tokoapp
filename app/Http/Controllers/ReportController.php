@@ -29,8 +29,10 @@ class ReportController extends Controller
             ->paginate(15)
             ->withQueryString();
 
+        $paidBaseQuery = (clone $baseQuery)->where('payment_status', 'paid');
+
         $summary = [
-            'revenue' => (clone $baseQuery)->sum('total'),
+            'revenue' => (clone $paidBaseQuery)->sum('total'),
         ];
 
         $summary['transaction_count'] = $transactions->total();
@@ -40,6 +42,7 @@ class ReportController extends Controller
 
         $bestSelling = DB::table('transaction_details')
             ->join('transactions', 'transactions.id', '=', 'transaction_details.transaction_id')
+            ->where('transactions.payment_status', '=', 'paid')
             ->select('transaction_details.product_name', DB::raw('SUM(transaction_details.quantity) as qty_sold'))
             ->when($period === 'daily', fn ($query) => $query->whereDate('transactions.transacted_at', $date))
             ->when($period === 'monthly', function ($query) use ($month): void {
@@ -73,11 +76,14 @@ class ReportController extends Controller
 
         return response()->streamDownload(function () use ($transactions): void {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['Invoice', 'Tanggal', 'Kasir', 'Subtotal', 'Diskon', 'Total', 'Bayar', 'Kembalian']);
+            fputcsv($handle, ['Invoice', 'Mode', 'Status', 'Pelanggan', 'Tanggal', 'Kasir', 'Subtotal', 'Diskon', 'Total', 'Bayar', 'Kembalian']);
 
             foreach ($transactions as $transaction) {
                 fputcsv($handle, [
                     $transaction->invoice_number,
+                    $transaction->transaction_mode,
+                    $transaction->payment_status,
+                    $transaction->customer_name,
                     $transaction->transacted_at,
                     $transaction->cashier->name,
                     $transaction->subtotal,
