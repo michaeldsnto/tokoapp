@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -39,7 +40,15 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Minuman', 'description' => 'Produk minuman dingin dan hangat'],
             ['name' => 'Makanan', 'description' => 'Snack dan makanan ringan'],
             ['name' => 'Kebutuhan Harian', 'description' => 'Sabun, tissue, dan kebutuhan rumah tangga'],
-        ])->map(fn (array $category) => Category::query()->firstOrCreate(['name' => $category['name']], $category));
+        ])->map(function (array $category) {
+            return Category::query()->firstOrCreate(
+                ['name' => $category['name']],
+                [
+                    'slug' => Str::slug($category['name']),
+                    'description' => $category['description'],
+                ]
+            );
+        });
 
         $products = [
             ['name' => 'Air Mineral 600ml', 'code' => '899100100001', 'price' => 4000, 'stock' => 30, 'category' => 'Minuman'],
