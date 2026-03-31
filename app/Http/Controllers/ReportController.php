@@ -24,21 +24,16 @@ class ReportController extends Controller
                 $query->whereYear('transacted_at', $year)->whereMonth('transacted_at', $monthValue);
             });
 
+        $summary = [
+            'transaction_count' => (clone $baseQuery)->count(),
+            'average_order' => (float) ((clone $baseQuery)->avg('total') ?? 0),
+            'revenue' => (clone $baseQuery)->where('payment_status', 'paid')->sum('total'),
+        ];
+
         $transactions = (clone $baseQuery)
             ->latest('transacted_at')
             ->paginate(15)
             ->withQueryString();
-
-        $paidBaseQuery = (clone $baseQuery)->where('payment_status', 'paid');
-
-        $summary = [
-            'revenue' => (clone $paidBaseQuery)->sum('total'),
-        ];
-
-        $summary['transaction_count'] = $transactions->total();
-        $summary['average_order'] = $summary['transaction_count'] > 0
-            ? $transactions->getCollection()->avg('total')
-            : 0;
 
         $bestSelling = DB::table('transaction_details')
             ->join('transactions', 'transactions.id', '=', 'transaction_details.transaction_id')
