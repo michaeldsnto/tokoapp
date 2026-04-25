@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="TokoApp">
+  <rect width="192" height="192" rx="44" fill="#166534"/>
+  <rect x="28" y="34" width="136" height="124" rx="26" fill="#F3F6FB"/>
+  <path d="M54 66H138" stroke="#166534" stroke-width="12" stroke-linecap="round"/>
+  <path d="M54 96H138" stroke="#166534" stroke-width="12" stroke-linecap="round"/>
+  <path d="M54 126H100" stroke="#166534" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="132" cy="126" r="15" fill="#22C55E"/>
+</svg>

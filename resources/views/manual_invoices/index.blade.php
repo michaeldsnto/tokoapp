@@ -6,48 +6,38 @@
 
 @section('content')
 <div class="panel">
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Invoice</th>
-                    <th>Pelanggan</th>
-                    <th>Status</th>
-                    <th>Tanggal</th>
-                    <th>Total</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-            @forelse($manualInvoices as $invoice)
-                <tr>
-                    <td><a href="{{ route('transactions.receipt', $invoice) }}">{{ $invoice->invoice_number }}</a></td>
-                    <td>{{ $invoice->customer_name ?: '-' }}</td>
-                    <td>
-                        @if($invoice->payment_status === 'paid')
-                            <span class="badge">PAID</span>
-                        @else
-                            <span class="badge warning">UNPAID</span>
-                        @endif
-                    </td>
-                    <td>{{ $invoice->transacted_at->format('d M Y H:i') }}</td>
-                    <td>Rp {{ number_format($invoice->total, 0, ',', '.') }}</td>
-                    <td style="white-space: nowrap; display:flex; gap:8px; flex-wrap:wrap;">
-                        <a href="{{ route('transactions.receipt', $invoice) }}" class="btn">Lihat Nota</a>
-                        @if($invoice->payment_status !== 'paid')
-                            <form action="{{ route('manual-invoices.mark-paid', $invoice) }}" method="POST" class="inline" onsubmit="return confirm('Tandai nota ini sebagai lunas?')">
-                                @csrf
-                                @method('PATCH')
-                                <button class="btn btn-primary" type="submit">Tandai Lunas</button>
-                            </form>
-                        @endif
-                    </td>
-                </tr>
-            @empty
-                <tr><td colspan="6" class="muted">Belum ada nota manual.</td></tr>
-            @endforelse
-            </tbody>
-        </table>
+    <div style="display:grid; gap:14px;">
+        @forelse($manualInvoices as $invoice)
+            <div style="display:grid; gap:14px; padding:18px; border-radius:18px; border:1px solid var(--border); background:var(--surface-strong);">
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
+                    <div>
+                        <a href="{{ route('transactions.receipt', $invoice) }}"><strong>{{ $invoice->invoice_number }}</strong></a>
+                        <div class="muted" style="margin-top:4px;">{{ $invoice->customer_name ?: 'Tanpa nama pelanggan' }}</div>
+                    </div>
+                    @if($invoice->payment_status === 'paid')
+                        <span class="badge">PAID</span>
+                    @else
+                        <span class="badge warning">UNPAID</span>
+                    @endif
+                </div>
+                <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                    <span class="muted">{{ $invoice->transacted_at->format('d M Y H:i') }}</span>
+                    <strong>Rp {{ number_format($invoice->total, 0, ',', '.') }}</strong>
+                </div>
+                <div style="display:grid; gap:10px;">
+                    <a href="{{ route('transactions.receipt', $invoice) }}" class="btn">Lihat Nota</a>
+                    @if($invoice->payment_status !== 'paid')
+                        <form action="{{ route('manual-invoices.mark-paid', $invoice) }}" method="POST" class="inline" onsubmit="return confirm('Tandai nota ini sebagai lunas?')">
+                            @csrf
+                            @method('PATCH')
+                            <button class="btn btn-primary" type="submit">Tandai Lunas</button>
+                        </form>
+                    @endif
+                </div>
+            </div>
+        @empty
+            <div class="muted">Belum ada nota manual.</div>
+        @endforelse
     </div>
 
     <div class="pagination">{{ $manualInvoices->links() }}</div>

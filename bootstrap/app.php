@@ -12,6 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $trustedProxies = env('TRUSTED_PROXIES');
+
+        if ($trustedProxies) {
+            $middleware->trustProxies(
+                at: $trustedProxies === '*'
+                    ? '*'
+                    : array_map('trim', explode(',', $trustedProxies))
+            );
+        }
+
         $middleware->alias([
             'role' => RoleMiddleware::class,
         ]);

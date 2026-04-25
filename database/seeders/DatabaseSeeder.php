@@ -15,6 +15,10 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+        if (app()->environment('production') && ! env('ALLOW_DEMO_SEEDER', false)) {
+            return;
+        }
+
         User::query()->updateOrCreate(
             ['email' => 'admin@toko.test'],
             [

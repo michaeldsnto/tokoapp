@@ -49,6 +49,15 @@
             "@php artisan config:clear --ansi",
             "@php artisan test"
         ],
+        "deploy:prod": [
+            "composer install --no-dev --optimize-autoloader",
+            "@php artisan migrate --force",
+            "@php artisan storage:link --force",
+            "@php artisan optimize:clear",
+            "@php artisan config:cache",
+            "@php artisan route:cache",
+            "@php artisan view:cache"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

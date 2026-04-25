@@ -7,17 +7,17 @@
 
 @section('content')
     <style>
-        .pos-shell { display:grid; gap:20px; grid-template-columns:minmax(0,1.35fr) minmax(380px,0.9fr); align-items:start; }
+        .pos-shell { display:grid; gap:20px; grid-template-columns:1fr; align-items:start; }
         .pos-stage { position:relative; overflow:hidden; background:radial-gradient(circle at top left, rgba(34,197,94,.22), transparent 28%), radial-gradient(circle at bottom right, rgba(14,165,233,.18), transparent 34%), var(--surface); }
-        .pos-hero { display:grid; gap:18px; grid-template-columns:1.15fr .85fr; position:relative; z-index:1; }
-        .hero-copy h2 { font-size:2rem; margin:10px 0 12px; line-height:1.1; }
+        .pos-hero { display:grid; gap:18px; grid-template-columns:1fr; position:relative; z-index:1; }
+        .hero-copy h2 { font-size:1.45rem; margin:10px 0 12px; line-height:1.1; }
         .hero-copy p { margin:0; }
         .hero-metrics { display:grid; gap:14px; grid-template-columns:repeat(2, minmax(0,1fr)); }
         .metric-tile { padding:18px; border-radius:18px; border:1px solid var(--border); background:rgba(255,255,255,.10); }
         .metric-tile strong { display:block; font-size:1.5rem; margin-top:10px; }
-        .toolbar-grid { display:grid; gap:16px; grid-template-columns:minmax(0,1fr) 220px 170px; margin-top:22px; }
+        .toolbar-grid { display:grid; gap:16px; grid-template-columns:1fr; margin-top:22px; }
         .toolbar-card { padding:18px; border-radius:18px; border:1px solid var(--border); background:var(--surface-strong); }
-        .inventory-grid { display:grid; gap:18px; grid-template-columns:repeat(auto-fit, minmax(235px,1fr)); margin-top:22px; }
+        .inventory-grid { display:grid; gap:14px; grid-template-columns:1fr; margin-top:22px; }
         .inventory-card { border:1px solid var(--border); border-radius:22px; background:linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.06)); overflow:hidden; text-align:left; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
         .inventory-card:hover { transform:translateY(-4px); box-shadow:0 24px 44px rgba(15,23,42,.14); border-color:rgba(34,197,94,.28); }
         .inventory-card-header { padding:20px 20px 12px; display:flex; justify-content:space-between; gap:12px; align-items:center; }
@@ -44,8 +44,9 @@
         .change-highlight { margin-top:16px; padding:18px; border-radius:18px; background:rgba(34,197,94,.10); border:1px solid rgba(34,197,94,.22); }
         .change-highlight strong { display:block; font-size:1.6rem; margin-top:6px; }
         .pos-actions { display:grid; gap:12px; grid-template-columns:1fr 1fr; margin-top:18px; }
-        @media (max-width:1200px) { .pos-shell,.pos-hero,.toolbar-grid,.pos-actions { grid-template-columns:1fr; } .checkout-panel { position:static; } }
-        @media (max-width:768px) { .inventory-grid { grid-template-columns:1fr; } .hero-copy h2 { font-size:1.45rem; } .cart-item,.pos-actions,.hero-metrics { grid-template-columns:1fr; } .checkout-head,.checkout-body,.toolbar-card { padding:16px; } .cart-item-total { gap:10px; align-items:flex-start; flex-direction:column; } }
+        @media (min-width:1201px) { .pos-shell { grid-template-columns:minmax(0,1.35fr) minmax(380px,0.9fr); } .pos-hero { grid-template-columns:1.15fr .85fr; } .toolbar-grid { grid-template-columns:minmax(0,1fr) 220px 170px; } .inventory-grid { grid-template-columns:repeat(auto-fit, minmax(235px,1fr)); } }
+        @media (max-width:1200px) { .checkout-panel { position:static; order:-1; } .pos-actions { grid-template-columns:1fr; } }
+        @media (max-width:768px) { .hero-metrics,.cart-item,.pos-actions { grid-template-columns:1fr; } .checkout-head,.checkout-body,.toolbar-card { padding:16px; } .cart-item-total { gap:10px; align-items:flex-start; flex-direction:column; } }
     </style>
 
     <div class="pos-shell">
@@ -126,7 +127,7 @@
 
                     <div class="field">
                         <label for="paid_amount">Bayar</label>
-                        <input type="number" id="paid_amount" name="paid_amount" min="0" step="0.01" required>
+                        <input type="number" id="paid_amount" name="paid_amount" min="0" step="0.01" inputmode="decimal" required>
                         @error('paid_amount') <div class="error">{{ $message }}</div> @enderror
                     </div>
 

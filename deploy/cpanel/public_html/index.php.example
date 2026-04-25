@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
+
+/*
+|--------------------------------------------------------------------------
+| cPanel Fallback Front Controller
+|--------------------------------------------------------------------------
+|
+| Pakai file ini hanya jika document root domain tidak bisa diarahkan langsung
+| ke folder /public milik Laravel.
+|
+| Asumsi struktur:
+| - aplikasi Laravel ada di: /home/USERNAME/tokoapp
+| - file ini diletakkan di: /home/USERNAME/public_html/index.php
+|
+| Ubah path di bawah sesuai lokasi real project Anda.
+|
+*/
+
+$appRoot = __DIR__.'/../tokoapp';
+
+if (file_exists($maintenance = $appRoot.'/storage/framework/maintenance.php')) {
+    require $maintenance;
+}
+
+require $appRoot.'/vendor/autoload.php';
+
+/** @var Application $app */
+$app = require_once $appRoot.'/bootstrap/app.php';
+
+$app->handleRequest(Request::capture());

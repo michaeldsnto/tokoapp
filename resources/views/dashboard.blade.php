@@ -15,28 +15,39 @@
 <div class="grid cols-2" style="margin-top:18px;">
     <div class="panel">
         <h3>Nota Manual Belum Lunas</h3><p class="muted">Tagihan pelanggan yang dibuat manual dan belum dibayar.</p>
-        <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Pelanggan</th><th>Tanggal</th><th>Total</th></tr></thead><tbody>
+        <div style="display:grid; gap:12px;">
             @forelse($pendingManualInvoices as $transaction)
-                <tr>
-                    <td><a href="{{ route('transactions.receipt', $transaction) }}">{{ $transaction->invoice_number }}</a></td>
-                    <td>{{ $transaction->customer_name ?: '-' }}</td>
-                    <td>{{ $transaction->transacted_at->format('d M Y H:i') }}</td>
-                    <td>Rp {{ number_format($transaction->total, 0, ',', '.') }}</td>
-                </tr>
+                <a href="{{ route('transactions.receipt', $transaction) }}" style="display:grid; gap:10px; padding:16px; border-radius:18px; border:1px solid var(--border); background:var(--surface-strong);">
+                    <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
+                        <strong>{{ $transaction->invoice_number }}</strong>
+                        <span class="badge warning">UNPAID</span>
+                    </div>
+                    <div class="muted">{{ $transaction->customer_name ?: 'Tanpa nama pelanggan' }}</div>
+                    <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                        <span class="muted">{{ $transaction->transacted_at->format('d M Y H:i') }}</span>
+                        <strong>Rp {{ number_format($transaction->total, 0, ',', '.') }}</strong>
+                    </div>
+                </a>
             @empty
-                <tr><td colspan="4" class="muted">Belum ada nota manual yang belum lunas.</td></tr>
+                <div class="muted">Belum ada nota manual yang belum lunas.</div>
             @endforelse
-        </tbody></table></div>
+        </div>
     </div>
     <div class="panel">
         <h3>Barang Terlaris</h3><p class="muted">Top 5 produk paling sering terjual dari transaksi yang sudah dibayar.</p>
-        <div class="table-wrap"><table><thead><tr><th>Barang</th><th>Terjual</th></tr></thead><tbody>
+        <div style="display:grid; gap:12px;">
             @forelse($topProducts as $item)
-                <tr><td>{{ $item->product_name }}</td><td>{{ $item->qty_sold }} pcs</td></tr>
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; padding:16px; border-radius:18px; border:1px solid var(--border); background:var(--surface-strong);">
+                    <div>
+                        <strong>{{ $item->product_name }}</strong>
+                        <div class="muted">Produk terjual</div>
+                    </div>
+                    <span class="badge">{{ $item->qty_sold }} pcs</span>
+                </div>
             @empty
-                <tr><td colspan="2" class="muted">Belum ada data penjualan.</td></tr>
+                <div class="muted">Belum ada data penjualan.</div>
             @endforelse
-        </tbody></table></div>
+        </div>
     </div>
 </div>
 @endsection
